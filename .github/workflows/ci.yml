@@ -23,7 +23,7 @@ jobs:
         run: corepack prepare pnpm@9.14.4 --activate
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile=false
+        run: pnpm install --no-frozen-lockfile --strict-peer-dependencies=false
 
       - name: Build site
         run: pnpm build
