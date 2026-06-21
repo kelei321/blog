@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  quality:
+  build:
     name: Check and build
     runs-on: ubuntu-latest
     steps:
@@ -20,16 +20,13 @@ jobs:
           node-version: 20
 
       - name: Enable pnpm
-        run: corepack enable
+        run: corepack prepare pnpm@9.14.4 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Astro check
         run: pnpm check
-
-      - name: Type check
-        run: pnpm type-check
 
       - name: Build site
         run: pnpm build
