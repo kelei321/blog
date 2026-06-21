@@ -1,0 +1,16 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getAllTags, getPosts } from "../../lib/posts";
+
+const posts = await getPosts();
+const tags = getAllTags(posts);
+---
+
+<BaseLayout title="标签 | Kelei Notes" description="文章标签">
+  <section class="simple-page">
+    <h1>标签</h1>
+    <div class="pill-list">
+      {tags.map((tag) => <a class="pill-link" href={`/tags/${tag}/`}>#{tag}</a>)}
+    </div>
+  </section>
+</BaseLayout>
