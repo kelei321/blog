@@ -4,22 +4,23 @@
   <p class="search-tip">生产构建会在 `dist/pagefind` 生成索引；本地开发模式下搜索可能不可用。</p>
 </section>
 
+<script src="/pagefind/pagefind-ui.js" defer></script>
 <script is:inline>
-  window.addEventListener("DOMContentLoaded", async () => {
+  window.addEventListener("DOMContentLoaded", () => {
     const target = document.querySelector("#search");
 
-    try {
-      const pagefind = await import("/pagefind/pagefind-ui.js");
-      new pagefind.PagefindUI({
+    if (window.PagefindUI) {
+      new window.PagefindUI({
         element: "#search",
         showImages: false,
         showSubResults: true,
         resetStyles: false,
       });
-    } catch (error) {
-      if (target) {
-        target.innerHTML = '<div class="empty-state">搜索索引需要执行 <code>pnpm build</code> 后生成。</div>';
-      }
+      return;
+    }
+
+    if (target) {
+      target.innerHTML = '<div class="empty-state">搜索索引需要执行 <code>pnpm build</code> 后生成。</div>';
     }
   });
 </script>
