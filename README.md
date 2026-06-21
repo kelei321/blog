@@ -42,16 +42,20 @@ Pagefind 索引会生成到 `dist/pagefind`。
 
 ## Cloudflare Pages 配置
 
+推荐第一次部署使用 npm 命令，避免仓库还没有 `pnpm-lock.yaml` 时 Cloudflare Pages 自动安装依赖的包管理器判断不一致。
+
 - Framework preset: `Astro`
-- Build command: `pnpm build`
+- Build command: `npm run build`
 - Build output directory: `dist`
 - Node.js version: `20` 或更高
+
+提交 `pnpm-lock.yaml` 后，也可以把 Build command 改成 `pnpm build`。
 
 详细说明见：`docs/cloudflare-pages.md`。
 
 ## Giscus 配置
 
-Giscus 需要先启用 GitHub Discussions，再到 https://giscus.app/ 生成 repo/category ID。
+Giscus 需要先启用 GitHub Discussions，再到 https://giscus.app/ 生成 repo/category ID。未配置 Giscus 环境变量时，评论区只会显示未启用提示，不会阻塞构建。
 
 本地可复制环境变量模板：
 
