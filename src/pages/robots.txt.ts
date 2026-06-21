@@ -1,6 +1,7 @@
+import type { APIRoute } from "astro";
 import { SITE } from "../config";
 
-export function GET(context: { site?: URL }) {
+export const GET: APIRoute = (context) => {
   const site = context.site?.toString() ?? SITE.url;
   const body = `User-agent: *\nAllow: /\n\nSitemap: ${new URL("sitemap-index.xml", site).toString()}\n`;
 
@@ -9,4 +10,4 @@ export function GET(context: { site?: URL }) {
       "Content-Type": "text/plain; charset=utf-8",
     },
   });
-}
+};
