@@ -1,0 +1,25 @@
+<section class="search-panel" data-pagefind-ignore>
+  <div id="search"></div>
+  <p class="search-tip">生产构建会在 `dist/pagefind` 生成索引；本地开发模式下搜索可能不可用。</p>
+</section>
+
+<script is:inline>
+  window.addEventListener("DOMContentLoaded", async () => {
+    const target = document.querySelector("#search");
+
+    try {
+      const pagefind = await import("/pagefind/pagefind-ui.js");
+      await import("/pagefind/pagefind-ui.css");
+      new pagefind.PagefindUI({
+        element: "#search",
+        showImages: false,
+        showSubResults: true,
+        resetStyles: false,
+      });
+    } catch (error) {
+      if (target) {
+        target.innerHTML = '<div class="empty-state">搜索索引需要执行 <code>pnpm build</code> 后生成。</div>';
+      }
+    }
+  });
+</script>
