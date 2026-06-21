@@ -1,4 +1,4 @@
-name: CI
+name: Blog CI
 
 on:
   pull_request:
@@ -7,7 +7,8 @@ on:
       - main
 
 jobs:
-  build:
+  quality:
+    name: Check and build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,11 +19,17 @@ jobs:
         with:
           node-version: 20
 
-      - name: Enable corepack
+      - name: Enable pnpm
         run: corepack enable
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile=false
+        run: pnpm install --frozen-lockfile
 
-      - name: Build
+      - name: Astro check
+        run: pnpm check
+
+      - name: Type check
+        run: pnpm type-check
+
+      - name: Build site
         run: pnpm build
