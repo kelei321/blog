@@ -1,0 +1,51 @@
+---
+title: 使用 Cloudflare 搭建 Astro 博客
+description: 记录这个博客的技术选型：Astro、MDX、Cloudflare Pages、Pagefind 和 Giscus。
+published: 2026-06-21
+tags: [Cloudflare, Astro, Blog]
+category: 工程实践
+draft: false
+---
+
+import Callout from "../../components/Callout.astro";
+
+## 技术栈
+
+这个博客第一版采用下面的组合：
+
+- Astro 负责静态站点生成。
+- MDX 负责文章内容和可复用组件。
+- Cloudflare Pages 负责自动构建和托管。
+- Pagefind 负责纯静态全文搜索。
+- Giscus 负责基于 GitHub Discussions 的评论。
+
+<Callout type="success" title="第一版原则">
+  内容优先，先保持博客静态化。阅读量、点赞、评论审核、图片上传等动态能力后续再接 Workers、D1 和 R2。
+</Callout>
+
+## 写文章
+
+文章放在 `src/content/posts/` 目录下，可以使用 `.md` 或 `.mdx`。
+
+```md
+---
+title: 文章标题
+description: 文章摘要
+published: 2026-06-21
+tags: [Astro, Cloudflare]
+category: 工程实践
+draft: false
+---
+```
+
+## 部署
+
+Cloudflare Pages 构建配置：
+
+```txt
+Build command: pnpm build
+Build output directory: dist
+Node.js version: 20+
+```
+
+构建时会先执行 Astro 构建，然后执行 Pagefind 生成搜索索引。
