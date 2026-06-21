@@ -1,0 +1,46 @@
+---
+import Giscus from "../components/Giscus.astro";
+import BaseLayout from "./BaseLayout.astro";
+import type { BlogPost } from "../lib/posts";
+import { formatDate } from "../lib/posts";
+import { SITE } from "../config";
+
+interface Props {
+  post: BlogPost;
+  headings?: Array<{ depth: number; slug: string; text: string }>;
+}
+
+const { post, headings = [] } = Astro.props;
+const toc = headings.filter((heading) => heading.depth > 1 && heading.depth < 4);
+---
+
+<BaseLayout title={`${post.data.title} | ${SITE.title}`} description={post.data.description}>
+  <article class="post-detail">
+    <header class="post-hero">
+      <div class="post-card-meta">
+        <time datetime={post.data.published.toISOString()}>{formatDate(post.data.published)}</time>
+        <span>{post.data.category}</span>
+      </div>
+      <h1>{post.data.title}</h1>
+      <p>{post.data.description}</p>
+      <div class="tag-list">
+        {post.data.tags.map((tag) => <a href={`/tags/${tag}/`}>#{tag}</a>)}
+      </div>
+    </header>
+
+    {toc.length > 0 && (
+      <nav class="toc" aria-label="文章目录" data-pagefind-ignore>
+        <strong>目录</strong>
+        {toc.map((heading) => (
+          <a href={`#${heading.slug}`} class={`toc-depth-${heading.depth}`}>{heading.text}</a>
+        ))}
+      </nav>
+    )}
+
+    <div class="prose prose-slate dark:prose-invert max-w-none post-body">
+      <slot />
+    </div>
+  </article>
+
+  <Giscus />
+</BaseLayout>
