@@ -1,14 +1,15 @@
 import rss from "@astrojs/rss";
+import type { APIRoute } from "astro";
 import { SITE } from "../config";
 import { getPosts } from "../lib/posts";
 
-export async function GET(context: { site: URL }) {
+export const GET: APIRoute = async (context) => {
   const posts = await getPosts();
 
   return rss({
     title: SITE.title,
     description: SITE.description,
-    site: context.site,
+    site: context.site ?? SITE.url,
     items: posts.map((post) => ({
       title: post.data.title,
       description: post.data.description,
@@ -16,4 +17,4 @@ export async function GET(context: { site: URL }) {
       link: `/posts/${post.slug}/`,
     })),
   });
-}
+};
