@@ -1,0 +1,52 @@
+---
+import ThemeToggle from "../components/ThemeToggle.astro";
+import { NAV_LINKS, PROFILE, SITE } from "../config";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const title = Astro.props.title ?? SITE.title;
+const description = Astro.props.description ?? SITE.description;
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="site-shell">
+      <aside class="sidebar" data-pagefind-ignore>
+        <a class="profile" href="/" aria-label={SITE.title}>
+          <div class="avatar">{PROFILE.avatarText}</div>
+          <div>
+            <strong>{PROFILE.name}</strong>
+            <p>{PROFILE.bio}</p>
+          </div>
+        </a>
+
+        <nav class="nav-links" aria-label="主导航">
+          {NAV_LINKS.map((link) => <a href={link.href}>{link.label}</a>)}
+        </nav>
+
+        <div class="sidebar-footer">
+          <ThemeToggle />
+          <a href="/rss.xml">RSS</a>
+          {PROFILE.links.map((link) => <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>)}
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>
