@@ -1,20 +1,42 @@
 import rss from "@astrojs/rss";
-import type { APIRoute } from "astro";
-import { SITE } from "../config";
-import { getPosts } from "../lib/posts";
+import { getSortedPosts } from "@utils/content-utils";
+import { url } from "@utils/url-utils";
+import type { APIContext } from "astro";
+import MarkdownIt from "markdown-it";
+import sanitizeHtml from "sanitize-html";
+import { siteConfig } from "@/config";
 
-export const GET: APIRoute = async (context) => {
-  const posts = await getPosts();
+const parser = new MarkdownIt();
 
-  return rss({
-    title: SITE.title,
-    description: SITE.description,
-    site: context.site ?? SITE.url,
-    items: posts.map((post) => ({
-      title: post.data.title,
-      description: post.data.description,
-      pubDate: post.data.published,
-      link: `/posts/${post.slug}/`,
-    })),
-  });
-};
+function stripInvalidXmlChars(str: string): string {
+	return str.replace(
+		// biome-ignore lint/suspicious/noControlCharactersInRegex: https://www.w3.org/TR/xml/#charsets
+		/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\uFDD0-\uFDEF\uFFFE\uFFFF]/g,
+		"",
+	);
+}
+
+export async function GET(context: APIContext) {
+	const blog = await getSortedPosts();
+
+	return rss({
+		title: siteConfig.title,
+		description: siteConfig.subtitle || "No description",
+		site: context.site ?? "https://fuwari.vercel.app",
+		items: blog.map((post) => {
+			const content =
+				typeof post.body === "string" ? post.body : String(post.body || "");
+			const cleanedContent = stripInvalidXmlChars(content);
+			return {
+				title: post.data.title,
+				pubDate: post.data.published,
+				description: post.data.description || "",
+				link: url(`/posts/${post.slug}/`),
+				content: sanitizeHtml(parser.render(cleanedContent), {
+					allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+				}),
+			};
+		}),
+		customData: `<language>${siteConfig.lang}</language>`,
+	});
+}
