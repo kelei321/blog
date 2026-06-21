@@ -1,0 +1,16 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getAllCategories, getPosts } from "../../lib/posts";
+
+const posts = await getPosts();
+const categories = getAllCategories(posts);
+---
+
+<BaseLayout title="分类 | Kelei Notes" description="文章分类">
+  <section class="simple-page">
+    <h1>分类</h1>
+    <div class="pill-list">
+      {categories.map((category) => <a class="pill-link" href={`/categories/${category}/`}>{category}</a>)}
+    </div>
+  </section>
+</BaseLayout>
