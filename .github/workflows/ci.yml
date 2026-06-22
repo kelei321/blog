@@ -19,18 +19,8 @@ jobs:
         with:
           node-version: 24
 
-      - name: Enable pnpm
-        run: corepack prepare pnpm@9.14.4 --activate
-
-      - name: Show tool versions
-        run: |
-          node --version
-          corepack --version
-          pnpm --version
-          pnpm config list
-
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile --strict-peer-dependencies=false
+        run: npm install --legacy-peer-deps --no-audit --no-fund
 
       - name: Build site
-        run: pnpm build
+        run: npm run build
